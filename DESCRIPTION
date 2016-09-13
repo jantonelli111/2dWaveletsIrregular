@@ -1,0 +1,22 @@
+Package: 2DWaveletsIrregular
+Type: Package
+Title: Distance Adjusted Propensity Score Matching
+Version: 0.0.0.9000
+Date: 2016-08-12
+Author: Georgia Papadogeorgou
+Maintainer: Georgia Papadogeorgou <gpapadogeorgou@gmail.com>
+Description: FILL
+License: GPL (>= 2)
+LazyData: TRUE
+URL: https://github.com/gpapadog/DAPSm
+BugReports: https://github.com/gpapadog/DAPSm/issues
+RoxygenNote: 5.0.1
+Suggests: 
+    ggplot2,
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+Imports: 
+    fields,
+    stats
