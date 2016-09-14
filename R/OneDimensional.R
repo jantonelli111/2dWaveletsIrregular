@@ -1,65 +1,93 @@
-#' Matching on distance matrix
+#' Creating design matrix with 1d wavelet basis functions as predictors
 #'
-#' Takes in a matrix and runs through it matching rows to columns with small entries.
-#' The smallest one is matched first, and it continues on.
+#' Takes in the locations at which data is observed and creates a design matrix where each column corresponds
+#' to a given wavelet basis function evaluated at the observed data locations. This function is taken from the
+#' code provided in Wand and Ormerod (2011).
 #'
-#' @param M       A non-negative matrix (T x C)
-#' @param caliper The caliper controls how far apart with respect to their M entry
-#'                matched pairs can be. When set to NULL, all possible matches with
-#'                finite M entry are taken. If set to a number, no entries are
-#'                allowed to be matched if larger than caliper.
+#' @param x              Vector of locations at which we observe data
+#' @param numLevels      Number of wavelet levels. Should be an integer between 2 and 10
+#' @param filterNumber   Which Daubechies wavelet filter is desired. Default value is 5
+#' @param resolution     The number of points in the grid used to evaluate wavelet basis functions. Should be
+#'                       a large integer that is a power of 2    
 #'
-#' @return An ordered matrix of the row and column indices that are matched.
+#' @return An N x K matrix containing wavelet basis functions evaluated at observed data
 #'
 #' @export
 #' @examples
-#' set.seed(1)
-#' D <- matrix(rexp(800, rate = 0.5), 20, 40)
-#' MinDistMatch(D, caliper = NULL)
-#' MinDistMatch(D, caliper = 0.1)
-MinDistMatch <- function(M, caliper = NULL) {
+#' 
+#' n <- 1000
+#' x <- runif(n)
+#' 
+#' numLevels <- 3
+#' k = 2^numLevels - 1
+#' Zx <- cbind(rep(1, n), ZDaub(x, numLevels=numLevels))
+
+Z1d <- function(x,numLevels=6,filterNumber=5,
+                  resolution=16384)
+{
+  # Load required package:
   
-  num_trt <- nrow(M)
-  num_con <- ncol(M)
-  rownames(M) <- 1:num_trt
-  colnames(M) <- 1:num_con
+  range.x=range(x)
   
-  mat <- NULL
-  min_m <- min(M)
+  library(wavethresh)
+    
+  # Ensure that the number of levels is `allowable'.
   
-  # If caliper is set to NULL, all finite matches are allowed.
-  if (is.null(caliper)) {
-    caliper <- max(as.numeric(M)[!is.infinite(as.numeric(M))]) + 1
+  if (!any(numLevels==(1:10)))
+    stop("Number of levels should be between 2 and 10.")
+  
+  # Ensure the resolution value is a power of 2 and within a reasonable range.
+  
+  if (!any(resolution==(2^(10:20))))
+    stop("Resolution value should be a power of 2, with the
+         power between 10 and 20.")
+  
+  # Transform x to the unit interval and obtain variables
+  # required for linear interpolation:
+  
+  xUnit <- (x - range.x[1])/(range.x[2] - range.x[1])
+  xUres <- xUnit*resolution
+  fXuRes <- floor(xUres)
+  
+  # Set filter and wavelet family  
+  
+  family <- "DaubExPhase"
+  K <- 2^numLevels - 1
+  
+  # Create a dummy wavelet transform object
+  
+  wdObj <- wd(rep(0,resolution),filter.number=filterNumber,
+              family="DaubExPhase")
+  
+  Z <- matrix(0,length(x),K)
+  for (k in 1:K)
+  {
+    # Create wobj so that it contains the Kth basis
+    # function of the Z matrix with `resolution' regularly 
+    # spaced points:
+    
+    putCobj <- putC(wdObj,level=0,v=0)
+    putCobj$D <- putCobj$D*0
+    putCobj$D[resolution-k] <- 1
+    
+    # Obtain kth column of Z via linear interpolation
+    # of the wr(putCobj) grid values:
+    
+    wtVec <- xUres - fXuRes
+    wvVec <- wr(putCobj)
+    wvVec <- c(wvVec,rep(wvVec[length(wvVec)],2))
+    Z[,k] <- sqrt(resolution)*((1 - wtVec)*wvVec[fXuRes+1]
+                               + wtVec*wvVec[fXuRes+2])
   }
   
-  while (min(M) <= caliper & !is.null(dim(M))) {
-    wh_row <- which(apply(M, 1, function(x) any(x == min_m)))[1]
-    wh_col <- which(M[wh_row, ] == min_m)[1]
-    mat <- rbind(mat, c(rownames(M)[wh_row], colnames(M)[wh_col]))
-    M <- M[ - wh_row, - wh_col]
-    min_m <- min(M)
-  }
+  # Create column indices to impose "left-to-right" ordering
+  # within the same level:
   
-  # In the end we are left with a vector, so we need to check for
-  # the last matched pair.
-  if (is.null(dim(M))) {
-    wh_col <- which(M == min(M))
-    if (any(M[wh_col] < caliper)) {
-      if (num_trt < num_con) {
-        mat <- rbind(mat, c(setdiff(1:num_trt, mat[, 1]),
-                            names(M)[wh_col]))
-      } else if (num_trt >= num_con) {
-        mat <- rbind(mat, c(names(M)[wh_col],
-                            setdiff(1:num_con, mat[, 1])))
-      }
-    }
-  }
+  newColInds <- 1
+  for (ell in 1:(numLevels-1))
+    newColInds <- c(newColInds,(2^(ell+1)-1):(2^(ell)))
   
-  if (is.null(mat)) {
-    stop('No matches were found.')
-  }
-  mat <- mat[order(mat[, 1]), ]
-  mat <- matrix(as.numeric(mat), ncol = 2, nrow = nrow(mat))
-  colnames(mat) <- c('Row Index', 'Column Index')
-  return(mat)
+  Z <- Z[,newColInds]
+  
+  return(Z)
 }

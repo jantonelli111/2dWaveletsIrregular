@@ -1,4 +1,4 @@
-Package: 2DWaveletsIrregular
+Package: Irregular2dWavelets
 Type: Package
 Title: Distance Adjusted Propensity Score Matching
 Version: 0.0.0.9000
