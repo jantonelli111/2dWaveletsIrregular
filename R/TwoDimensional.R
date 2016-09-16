@@ -59,7 +59,6 @@ Z2d <- function(Zx,Zy) {
 #' @examples
 #' 
 #' data(BostonPMsim)
-#' library(maps)
 #' numLevels <- 3
 #' Decomp <- Irregular2dWavelet(x=BostonPMsim$long, 
 #'                              y=BostonPMsim$lat,
@@ -115,7 +114,6 @@ threshold2d <- function(beta, numLevels, remove.x, remove.y) {
 #' @examples
 #' 
 #' data(BostonPMsim)
-#' library(maps)
 #' numLevels <- 3
 #' Decomp <- Irregular2dWavelet(x=BostonPMsim$long, 
 #'                              y=BostonPMsim$lat,
@@ -130,8 +128,7 @@ threshold2d <- function(beta, numLevels, remove.x, remove.y) {
 #' points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.2)
 
 Irregular2dWavelet <- function(x, y, f, numLevels) {
-  library(glmnet)
-  
+
   n = length(x)
   k = 2^numLevels - 1
   Zx <- cbind(rep(1, n), Z1d(x, numLevels=numLevels))

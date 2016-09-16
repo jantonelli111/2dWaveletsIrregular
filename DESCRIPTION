@@ -19,4 +19,7 @@ Suggests:
 VignetteBuilder: knitr
 Imports: 
     fields,
-    stats
+    stats,
+    maps,
+    glmnet,
+    wavethresh

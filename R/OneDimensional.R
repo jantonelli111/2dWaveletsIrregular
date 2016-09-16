@@ -28,9 +28,7 @@ Z1d <- function(x,numLevels=6,filterNumber=5,
   # Load required package:
   
   range.x=range(x)
-  
-  library(wavethresh)
-    
+      
   # Ensure that the number of levels is `allowable'.
   
   if (!any(numLevels==(1:10)))
