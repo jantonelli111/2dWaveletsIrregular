@@ -72,7 +72,7 @@ Z1d <- function(x,numLevels=6,filterNumber=5,
     # of the wr(putCobj) grid values:
     
     wtVec <- xUres - fXuRes
-    wvVec <- wr(putCobj)
+    wvVec <- wavethresh::wr(putCobj)
     wvVec <- c(wvVec,rep(wvVec[length(wvVec)],2))
     Z[,k] <- sqrt(resolution)*((1 - wtVec)*wvVec[fXuRes+1]
                                + wtVec*wvVec[fXuRes+2])
