@@ -27,7 +27,6 @@ to the desired wavelet levels
 }
 \examples{
 data(BostonPMsim)
-library(maps)
 numLevels <- 3
 Decomp <- Irregular2dWavelet(x=BostonPMsim$long,
                              y=BostonPMsim$lat,
