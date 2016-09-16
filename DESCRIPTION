@@ -1,15 +1,15 @@
 Package: Irregular2dWavelets
 Type: Package
-Title: Distance Adjusted Propensity Score Matching
+Title: Two-dimensional wavelet decompositions of irregular grids
 Version: 0.0.0.9000
 Date: 2016-08-12
-Author: Georgia Papadogeorgou
-Maintainer: Georgia Papadogeorgou <gpapadogeorgou@gmail.com>
+Author: Joseph Antonelli
+Maintainer: Joseph Antonelli <jantonelli111@gmail.com>
 Description: FILL
 License: GPL (>= 2)
 LazyData: TRUE
-URL: https://github.com/gpapadog/DAPSm
-BugReports: https://github.com/gpapadog/DAPSm/issues
+URL: https://github.com/jantonelli111/Irregular2dWavelets
+BugReports: https://github.com/jantonelli111/Irregular2dWavelets/issues
 RoxygenNote: 5.0.1
 Suggests: 
     ggplot2,

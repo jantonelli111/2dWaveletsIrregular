@@ -1,6 +1,6 @@
 ---
 title: "Irregular2dWavelets"
-author: "Vignette Author"
+author: "Joseph Antonelli"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,23 +9,43 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+Here we will present how to use the package Irregular2dWavelets, which performs two-dimensional wavelet decompositions on irregularly spaced grids. The primary purpose of this package is to perform the two-dimensional wavelet decompositions on irregular shapes and grids as seen in CITE PAPER. It is also possible to implement one-dimensional wavelets on irregular grids using the functions in this package, however, these ideas come from CITE WAND AND ORMEROD (2011), and are generally only included in the package as they are needed in order to build the 2d wavelets. This document will walk the user through the steps required to install the package from github, implement the main functions of the package, and perform 2d wavelet decompositions on simulated pollution data for the Boston area.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+# Installation
 
-## Vignette Info
+To install the package the user must first download the R package, devtools, which can be achieved with the following line of code
 
-Note the various macros within the `vignette` setion of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+```{r, echo=TRUE, eval=TRUE}
+library(devtools)
+```
 
-## Styles
+Once devtools is installed then the package can be loaded from github using the following
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+```{r, echo=TRUE, eval=TRUE}
+install_github(repo = "jantonelli111/Irregular2dWavelets")
+```
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+Now that the package is installed and loaded we can begin to describe how it is used for 2d wavelet decompositions.
+
+# Data example
+
+To motivate and illustrate the ideas seen in the package we will be using simulated data that is loosely based on $\text{PM}_{2.5}$ data from the Boston area. The data is a part of the package and can be loaded as follows
+
+```{r, echo=TRUE, eval=TRUE}
+data(BostonPMsim)
+```
+
+This data is loosely based on pollution measurements found in CITE KLOOG AND MYSELF, though it has been changed in a manner such that the resulting values no longer have any scientific interpretation. It will, however, resemble the surface of pollution in the Boston area and will be useful to illustrate the ideas of breaking the surface of pollution into separate spatial scales. Let's first examine the data to get an idea of it's structure. 
+
+```{r, echo=TRUE, eval=TRUE}
+head(BostonPMsim)
+```
+
+So we see that the data has 3 columns: latitude, longitude, and the simulated $\text{PM}_{2.5}$ values. Now we can also visualize the data:
+
+```{r, echo=TRUE, eval=FALSE}
+head(BostonPMsim)
+```
 
 ## Figures
 
