@@ -45,12 +45,12 @@ head(BostonPMsim)
 
 So we see that the data has 3 columns: latitude, longitude, and the simulated $\text{PM}_{2.5}$ values. Now we can also visualize the data:
 
-```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.width=4}
+```{r, echo=TRUE, eval=TRUE, fig.align='center'}
 library(maps)
 colors = colorRampPalette(c("yellow", "orange", "red"))
 BostonPMsim$col = colors(100)[as.numeric(cut(BostonPMsim$pm,breaks = 100))]
 map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
-points(BostonPMsim$long, BostonPMsim$lat, col=BostonPMsim$col, cex=.2)
+points(BostonPMsim$long, BostonPMsim$lat, col=BostonPMsim$col, cex=.5)
 ```
 
 # Two-dimensional decomposition
@@ -77,7 +77,7 @@ And now we can plot the resulting surface, which should be much smoother as we h
 ```{r, echo=TRUE, eval=TRUE, fig.align='center'}
 threshold.col = colors(100)[as.numeric(cut(threshold.fHatlow4,breaks = 100))]
 map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
-points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.2)
+points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.5)
 ```
 
 We could also plot the high frequency component, which is taken as the difference between the true surface and the smooth surface.
@@ -86,6 +86,6 @@ We could also plot the high frequency component, which is taken as the differenc
 threshold.high4 = BostonPMsim$pm - threshold.fHatlow4
 threshold.col.high = colors(100)[as.numeric(cut(threshold.high4,breaks = 100))]
 map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
-points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col.high, cex=.2)
+points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col.high, cex=.5)
 ```
 
