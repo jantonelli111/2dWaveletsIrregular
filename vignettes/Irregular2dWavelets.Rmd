@@ -67,14 +67,14 @@ Decomp = Irregular2dWavelet(x=BostonPMsim$long,
 
 So we now have the estimated wavelet coefficients and we can use these to examine different spatial scales of the surface. This is where the threshold2d function comes into play. The threshold2d function takes in the scales that the user wishes to hard threshold coefficients to zero. 
 
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE, eval=TRUE}
 threshold.betalow4 <- threshold2d(Decomp$beta, numLevels, remove.x=4:numLevels, remove.y=4:numLevels)
 threshold.fHatlow4 <- Decomp$Zxy%*%threshold.betalow4
 ```
 
 And now we can plot the resulting surface, which should be much smoother as we have removed any signal that was captured by scales 4 through numLevels. 
 
-```{r, echo=TRUE, eval=FALSE, fig.align='center'}
+```{r, echo=TRUE, eval=TRUE, fig.align='center'}
 threshold.col = colors(100)[as.numeric(cut(threshold.fHatlow4,breaks = 100))]
 map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
 points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.75)
@@ -82,7 +82,7 @@ points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.75)
 
 We could also plot the high frequency component, which is taken as the difference between the true surface and the smooth surface.
 
-```{r, echo=TRUE, eval=FALSE, fig.align='center'}
+```{r, echo=TRUE, eval=TRUE, fig.align='center'}
 threshold.high4 = BostonPMsim$pm - threshold.fHatlow4
 threshold.col.high = colors(100)[as.numeric(cut(threshold.high4,breaks = 100))]
 map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
