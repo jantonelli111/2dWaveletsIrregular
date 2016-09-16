@@ -2,7 +2,7 @@
 % Please edit documentation in R/TwoDimensional.R
 \name{Irregular2dWavelet}
 \alias{Irregular2dWavelet}
-\title{Setting wavelet coefficients to zero that correspond to certain levels}
+\title{Performing 2d wavelet decomposition}
 \usage{
 Irregular2dWavelet(x, y, f, numLevels)
 }
@@ -19,7 +19,17 @@ Irregular2dWavelet(x, y, f, numLevels)
 A matrix of wavelet basis functions evaluated at the data as well as the estimated wavelet coefficients
 }
 \description{
-Takes in a vector of coefficients and returns the same vector, but with entries forced to zero that correspond
-to the desired wavelet levels
+Takes in the location of the data as well as the data values
+}
+\examples{
+n <- 1000
+x <- runif(n)
+y <- runif(n)
+
+numLevels <- 3
+k = 2^numLevels - 1
+Zx <- cbind(rep(1, n), ZDaub(x, numLevels=numLevels))
+Zy <- cbind(rep(1, n), ZDaub(y, numLevels=numLevels))
+Zxy <- Z2d(Zx,Zy)
 }
 

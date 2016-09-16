@@ -94,10 +94,9 @@ threshold2d <- function(beta, numLevels, remove.x, remove.y) {
 
 
 
-#' Setting wavelet coefficients to zero that correspond to certain levels
+#' Performing 2d wavelet decomposition
 #'
-#' Takes in a vector of coefficients and returns the same vector, but with entries forced to zero that correspond
-#' to the desired wavelet levels
+#' Takes in the location of the data as well as the data values
 #'
 #' @param x              Vector of locations of the data in the first direction
 #' @param y              Vector of locations of the data in the second direction
@@ -120,6 +119,8 @@ threshold2d <- function(beta, numLevels, remove.x, remove.y) {
 #' Zxy <- Z2d(Zx,Zy)
 
 Irregular2dWavelet <- function(x, y, f, numLevels) {
+  library(glmnet)
+  
   n = length(x)
   k = 2^numLevels - 1
   Zx <- cbind(rep(1, n), Z1d(x, numLevels=numLevels))

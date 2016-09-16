@@ -3,13 +3,14 @@ title: "Irregular2dWavelets"
 author: "Joseph Antonelli"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: vignette.bib
 vignette: >
   %\VignetteIndexEntry{Irregular2dWavelets}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
-Here we will present how to use the package Irregular2dWavelets, which performs two-dimensional wavelet decompositions on irregularly spaced grids. The primary purpose of this package is to perform the two-dimensional wavelet decompositions on irregular shapes and grids as seen in CITE PAPER. It is also possible to implement one-dimensional wavelets on irregular grids using the functions in this package, however, these ideas come from CITE WAND AND ORMEROD (2011), and are generally only included in the package as they are needed in order to build the 2d wavelets. This document will walk the user through the steps required to install the package from github, implement the main functions of the package, and perform 2d wavelet decompositions on simulated pollution data for the Boston area.
+Here we will present how to use the package Irregular2dWavelets, which performs two-dimensional wavelet decompositions on irregularly spaced grids. The primary purpose of this package is to perform the two-dimensional wavelet decompositions on irregular shapes and grids as seen in CITE PAPER. It is also possible to implement one-dimensional wavelets on irregular grids using the functions in this package, however, these ideas come from [@wand2011penalized], and are generally only included in the package as they are needed in order to build the 2d wavelets. This document will walk the user through the steps required to install the package from github, implement the main functions of the package, and perform 2d wavelet decompositions on simulated pollution data for the Boston area.
 
 # Installation
 
@@ -36,7 +37,7 @@ To motivate and illustrate the ideas seen in the package we will be using simula
 data(BostonPMsim)
 ```
 
-This data is loosely based on pollution measurements found in CITE KLOOG AND MYSELF, though it has been changed in a manner such that the resulting values no longer have any scientific interpretation. It will, however, resemble the surface of pollution in the Boston area and will be useful to illustrate the ideas of breaking the surface of pollution into separate spatial scales. Let's first examine the data to get an idea of it's structure. 
+This data is loosely based on pollution measurements found in [@kloog2012using], though it has been changed in a manner such that the resulting values no longer have any scientific interpretation. It will, however, resemble the surface of pollution in the Boston area and will be useful to illustrate the ideas of breaking the surface of pollution into separate spatial scales. Let's first examine the data to get an idea of it's structure. 
 
 ```{r, echo=TRUE, eval=TRUE}
 head(BostonPMsim)
@@ -57,39 +58,25 @@ points(BostonPMsim$long, BostonPMsim$lat, col=BostonPMsim$col, cex=.2)
 Now we will apply the main function of the package, which performs the two dimensional wavelet decomposition
 
 ```{r, echo=TRUE, eval=TRUE}
-numLevels = 2
+numLevels = 5
 Decomp = Irregular2dWavelet(x=BostonPMsim$long, 
                             y=BostonPMsim$lat,
                             f=BostonPMsim$pm,
                             numLevels=numLevels)
 ```
 
-## Figures
+So we now have the estimated wavelet coefficients and we can use these to examine different spatial scales of the surface. This is where the threshold2d function comes into play. The threshold2d function takes in the scales that the user wishes to hard threshold coefficients to zero. 
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r, echo=TRUE, eval=TRUE}
+threshold.betalow4 <- threshold2d(betauHat, numLevels, remove.x=4:numLevels, remove.y=4:numLevels)
+threshold.fHatlow4 <- Zxy%*%threshold.betalow4
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+And now we can plot the resulting surface, which should be much smoother as we have removed any signal that was captured by scales 4 through numLevels. 
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r, echo=TRUE, eval=TRUE}
+threshold.col = colors(100)[as.numeric(cut(threshold.fHatlow4,breaks = 100))]
+map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
+points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.2)
 ```
 
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
