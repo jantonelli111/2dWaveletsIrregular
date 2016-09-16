@@ -57,8 +57,8 @@ points(BostonPMsim$long, BostonPMsim$lat, col=BostonPMsim$col, cex=.2)
 
 Now we will apply the main function of the package, which performs the two dimensional wavelet decomposition
 
-```{r, echo=TRUE, eval=TRUE}
-numLevels = 5
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+numLevels = 4
 Decomp = Irregular2dWavelet(x=BostonPMsim$long, 
                             y=BostonPMsim$lat,
                             f=BostonPMsim$pm,
@@ -74,9 +74,18 @@ threshold.fHatlow4 <- Decomp$Zxy%*%threshold.betalow4
 
 And now we can plot the resulting surface, which should be much smoother as we have removed any signal that was captured by scales 4 through numLevels. 
 
-```{r, echo=TRUE, eval=TRUE}
+```{r, echo=TRUE, eval=TRUE, fig.align='center'}
 threshold.col = colors(100)[as.numeric(cut(threshold.fHatlow4,breaks = 100))]
 map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
 points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.2)
+```
+
+We could also plot the high frequency component, which is taken as the difference between the true surface and the smooth surface.
+
+```{r, echo=TRUE, eval=TRUE, fig.align='center'}
+threshold.high4 = BostonPMsim$pm - threshold.fHatlow4
+threshold.col.high = colors(100)[as.numeric(cut(threshold.high4,breaks = 100))]
+map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
+points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col.high, cex=.2)
 ```
 
