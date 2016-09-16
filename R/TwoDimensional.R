@@ -136,7 +136,7 @@ Irregular2dWavelet <- function(x, y, f, numLevels) {
   Zxy <- Z2d(Zx,Zy)
   
   fCenter = f - mean(f)
-  cvGLMNET <- cv.glmnet(Zxy[,-1], fCenter, intercept=FALSE)
+  cvGLMNET <- glmnet::cv.glmnet(Zxy[,-1], fCenter, intercept=FALSE)
   betauHat <- c(mean(f), as.numeric(coef(cvGLMNET, s="lambda.1se"))[-1])
   
   l = list(Zxy = Zxy, beta=betauHat)

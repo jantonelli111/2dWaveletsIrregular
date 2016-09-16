@@ -57,7 +57,7 @@ points(BostonPMsim$long, BostonPMsim$lat, col=BostonPMsim$col, cex=.75)
 
 Now we will apply the main function of the package, which performs the two dimensional wavelet decomposition
 
-```{r, echo=TRUE, eval=FALSE, message=FALSE}
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
 numLevels = 4
 Decomp = Irregular2dWavelet(x=BostonPMsim$long, 
                             y=BostonPMsim$lat,
