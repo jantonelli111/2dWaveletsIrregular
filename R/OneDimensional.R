@@ -64,7 +64,7 @@ Z1d <- function(x,numLevels=6,filterNumber=5,
     # function of the Z matrix with `resolution' regularly 
     # spaced points:
     
-    putCobj <- putC(wdObj,level=0,v=0)
+    putCobj <- wavethresh::putC(wdObj,level=0,v=0)
     putCobj$D <- putCobj$D*0
     putCobj$D[resolution-k] <- 1
     
