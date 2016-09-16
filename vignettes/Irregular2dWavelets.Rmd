@@ -15,13 +15,13 @@ Here we will present how to use the package Irregular2dWavelets, which performs 
 
 To install the package the user must first download the R package, devtools, which can be achieved with the following line of code
 
-```{r, echo=TRUE, eval=TRUE}
+```{r, echo=TRUE}
 library(devtools)
 ```
 
 Once devtools is installed then the package can be loaded from github using the following
 
-```{r, echo=TRUE, eval=TRUE}
+```{r, message=FALSE}
 install_github(repo = "jantonelli111/Irregular2dWavelets")
 library(Irregular2dWavelets)
 ```
@@ -44,8 +44,24 @@ head(BostonPMsim)
 
 So we see that the data has 3 columns: latitude, longitude, and the simulated $\text{PM}_{2.5}$ values. Now we can also visualize the data:
 
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.width=4}
+library(maps)
+colors = colorRampPalette(c("yellow", "orange", "red"))
+BostonPMsim$col = colors(100)[as.numeric(cut(BostonPMsim$pm,breaks = 100))]
+map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
+points(BostonPMsim$long, BostonPMsim$lat, col=BostonPMsim$col, cex=.2)
+```
+
+# Two-dimensional decomposition
+
+Now we will apply the main function of the package, which performs the two dimensional wavelet decomposition
+
 ```{r, echo=TRUE, eval=TRUE}
-head(BostonPMsim)
+numLevels = 3
+Decomp = Irregular2dWavelet(x=BostonPMsim$long, 
+                            y=BostonPMsim$lat,
+                            f=BostonPMsim$pm,
+                            numLevels=numLevels)
 ```
 
 ## Figures

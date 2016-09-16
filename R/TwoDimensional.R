@@ -91,3 +91,35 @@ threshold2d <- function(beta, numLevels, remove.x, remove.y) {
   
   return(threshold.beta)
 }
+
+
+
+#' Setting wavelet coefficients to zero that correspond to certain levels
+#'
+#' Takes in a vector of coefficients and returns the same vector, but with entries forced to zero that correspond
+#' to the desired wavelet levels
+#'
+#' @param x              Vector of locations of the data in the first direction
+#' @param y              Vector of locations of the data in the second direction
+#' @param f              Vector of data values observed at the given locations
+#' @param numLevels      Number of wavelet levels. Should be an integer between 2 and 10
+#'
+#' @return A matrix of wavelet basis functions evaluated at the data as well as the estimated wavelet coefficients
+#'
+#' @export
+#' @examples
+
+Irregular2dWavelet <- function(x, y, f, numLevels) {
+  n = length(x)
+  k = 2^numLevels - 1
+  Zx <- cbind(rep(1, n), Z1d(x, numLevels=numLevels))
+  Zy <- cbind(rep(1, n), Z1d(y, numLevels=numLevels))
+  Zxy <- Z2d(Zx,Zy)
+  
+  fCenter = f - mean(f)
+  cvGLMNET <- cv.glmnet(Zxy[,-1], fCenter, intercept=FALSE)
+  betauHat <- c(mean(f), as.numeric(coef(cvGLMNET, s="lambda.1se"))[-1])
+  
+  l = list(Zxy = Zxy, beta=betauHat)
+  return(l)
+}
