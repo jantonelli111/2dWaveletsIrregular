@@ -54,7 +54,7 @@ Z1d <- function(x,numLevels=6,filterNumber=5,
   
   # Create a dummy wavelet transform object
   
-  wdObj <- wd(rep(0,resolution),filter.number=filterNumber,
+  wdObj <- wavethresh::wd(rep(0,resolution),filter.number=filterNumber,
               family="DaubExPhase")
   
   Z <- matrix(0,length(x),K)
