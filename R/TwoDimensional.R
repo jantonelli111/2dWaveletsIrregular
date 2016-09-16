@@ -108,6 +108,16 @@ threshold2d <- function(beta, numLevels, remove.x, remove.y) {
 #'
 #' @export
 #' @examples
+#' 
+#' n <- 1000
+#' x <- runif(n)
+#' y <- runif(n)
+#' 
+#' numLevels <- 3
+#' k = 2^numLevels - 1
+#' Zx <- cbind(rep(1, n), ZDaub(x, numLevels=numLevels))
+#' Zy <- cbind(rep(1, n), ZDaub(y, numLevels=numLevels))
+#' Zxy <- Z2d(Zx,Zy)
 
 Irregular2dWavelet <- function(x, y, f, numLevels) {
   n = length(x)
