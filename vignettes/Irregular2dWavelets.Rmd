@@ -31,13 +31,13 @@ Now that the package is installed and loaded we can begin to describe how it is 
 
 To motivate and illustrate the ideas seen in the package we will be using simulated data that is loosely based on $\text{PM}_{2.5}$ data from the Boston area. The data is a part of the package and can be loaded as follows
 
-```{r, echo=TRUE, eval=TRUE}
+```{r, echo=TRUE, eval=FALSE}
 data(BostonPMsim)
 ```
 
 This data is loosely based on pollution measurements found in CITE KLOOG AND MYSELF, though it has been changed in a manner such that the resulting values no longer have any scientific interpretation. It will, however, resemble the surface of pollution in the Boston area and will be useful to illustrate the ideas of breaking the surface of pollution into separate spatial scales. Let's first examine the data to get an idea of it's structure. 
 
-```{r, echo=TRUE, eval=TRUE}
+```{r, echo=TRUE, eval=FALSE}
 head(BostonPMsim)
 ```
 
