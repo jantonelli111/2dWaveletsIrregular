@@ -22,14 +22,19 @@ A matrix of wavelet basis functions evaluated at the data as well as the estimat
 Takes in the location of the data as well as the data values
 }
 \examples{
-n <- 1000
-x <- runif(n)
-y <- runif(n)
-
+data(BostonPMsim)
+library(maps)
 numLevels <- 3
-k = 2^numLevels - 1
-Zx <- cbind(rep(1, n), ZDaub(x, numLevels=numLevels))
-Zy <- cbind(rep(1, n), ZDaub(y, numLevels=numLevels))
-Zxy <- Z2d(Zx,Zy)
+Decomp <- Irregular2dWavelet(x=BostonPMsim$long,
+                             y=BostonPMsim$lat,
+                             f=BostonPMsim$pm,
+                             numLevels=numLevels)
+
+threshold.betalow4 <- threshold2d(Decomp$beta, numLevels, remove.x=4:numLevels, remove.y=4:numLevels)
+threshold.fHatlow4 <- Decomp$Zxy\%*\%threshold.betalow4
+
+threshold.col = colors(100)[as.numeric(cut(threshold.fHatlow4,breaks = 100))]
+map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
+points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.2)
 }
 
