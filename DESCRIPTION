@@ -16,7 +16,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-VignetteBuilder: knitr
+VignetteBuilder: rmarkdown
 Imports: 
     fields,
     stats,
