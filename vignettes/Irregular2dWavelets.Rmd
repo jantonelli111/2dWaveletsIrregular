@@ -7,7 +7,7 @@ bibliography: vignette.bib
 vignette: >
   %\VignetteIndexEntry{Irregular2dWavelets}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\usepackage[utf8]{inputenc}
 ---
 
 Here we will present how to use the package Irregular2dWavelets, which performs two-dimensional wavelet decompositions on irregularly spaced grids. The primary purpose of this package is to perform the two-dimensional wavelet decompositions on irregular shapes and grids as seen in Antonelli et. al (2016) (http://arxiv.org/abs/1609.05186). It is also possible to implement one-dimensional wavelets on irregular grids using the functions in this package, however, these ideas come from [@wand2011penalized], and are generally only included in the package as they are needed in order to build the 2d wavelets. This document will walk the user through the steps required to install the package from github, implement the main functions of the package, and perform 2d wavelet decompositions on simulated pollution data for the Boston area.
