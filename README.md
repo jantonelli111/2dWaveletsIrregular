@@ -24,3 +24,4 @@ Then, to view the vignette simply type into R
 ```{r, echo=TRUE, message=FALSE}
 vignette("Irregular2dWavelets", package="Irregular2dWavelets")
 ```
+The PDF of the vignette can also be found in the vignettes folder of this github repository.
