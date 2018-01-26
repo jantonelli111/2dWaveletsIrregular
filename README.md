@@ -3,3 +3,82 @@
 This is an R package to implement the two-dimensional wavelet decomposition approach for irregular shapes and grids proposed in "Spatial Multiresolution Analysis of the Effect of PM2.5 on Birth Weights" by Antonelli et. al (2016). The paper can be found at the following link
 
 http://arxiv.org/pdf/1609.05186v1.pdf
+
+Here we will present how to use the package Irregular2dWavelets, which performs two-dimensional wavelet decompositions on irregularly spaced grids. The primary purpose of this package is to perform the two-dimensional wavelet decompositions on irregular shapes and grids as seen in Antonelli et. al (2016) (http://arxiv.org/abs/1609.05186). It is also possible to implement one-dimensional wavelets on irregular grids using the functions in this package, however, these ideas come from [@wand2011penalized], and are generally only included in the package as they are needed in order to build the 2d wavelets. This document will walk the user through the steps required to install the package from github, implement the main functions of the package, and perform 2d wavelet decompositions on simulated pollution data for the Boston area.
+
+# Installation
+
+To install the package the user must first download the R package, devtools, which can be achieved with the following line of code
+
+```{r, echo=TRUE}
+library(devtools)
+```
+
+Once devtools is installed then the package can be loaded from github using the following
+
+```{r, message=FALSE}
+install_github(repo = "jantonelli111/Irregular2dWavelets")
+library(Irregular2dWavelets)
+```
+
+Now that the package is installed and loaded we can begin to describe how it is used for 2d wavelet decompositions.
+
+# Data example
+
+To motivate and illustrate the ideas seen in the package we will be using simulated data that is loosely based on $\text{PM}_{2.5}$ data from the Boston area. The data is a part of the package and can be loaded as follows
+
+```{r, echo=TRUE, eval=TRUE}
+data(BostonPMsim)
+```
+
+This data is loosely based on pollution measurements found in [@kloog2012using], though it has been changed in a manner such that the resulting values no longer have any scientific interpretation. It will, however, resemble the surface of pollution in the Boston area and will be useful to illustrate the ideas of breaking the surface of pollution into separate spatial scales. Let's first examine the data to get an idea of it's structure. 
+
+```{r, echo=TRUE, eval=TRUE}
+head(BostonPMsim)
+```
+
+So we see that the data has 3 columns: latitude, longitude, and the simulated $\text{PM}_{2.5}$ values. Now we can also visualize the data:
+
+```{r, echo=TRUE, eval=TRUE, fig.align='center'}
+library(maps)
+colors = colorRampPalette(c("yellow", "orange", "red"))
+BostonPMsim$col = colors(100)[as.numeric(cut(BostonPMsim$pm,breaks = 100))]
+map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
+points(BostonPMsim$long, BostonPMsim$lat, col=BostonPMsim$col, cex=.75)
+```
+
+# Two-dimensional decomposition
+
+Now we will apply the main function of the package, which performs the two dimensional wavelet decomposition
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+numLevels = 4
+Decomp = Irregular2dWavelet(x=BostonPMsim$long, 
+                            y=BostonPMsim$lat,
+                            f=BostonPMsim$pm,
+                            numLevels=numLevels)
+```
+
+So we now have the estimated wavelet coefficients and we can use these to examine different spatial scales of the surface. This is where the threshold2d function comes into play. The threshold2d function takes in the scales that the user wishes to hard threshold coefficients to zero. 
+
+```{r, echo=TRUE, eval=TRUE}
+threshold.betalow4 <- threshold2d(Decomp$beta, numLevels, remove.x=4:numLevels, remove.y=4:numLevels)
+threshold.fHatlow4 <- Decomp$Zxy%*%threshold.betalow4
+```
+
+And now we can plot the resulting surface, which should be much smoother as we have removed any signal that was captured by scales 4 through numLevels. 
+
+```{r, echo=TRUE, eval=TRUE, fig.align='center'}
+threshold.col = colors(100)[as.numeric(cut(threshold.fHatlow4,breaks = 100))]
+map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
+points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col, cex=.75)
+```
+
+We could also plot the high frequency component, which is taken as the difference between the true surface and the smooth surface.
+
+```{r, echo=TRUE, eval=TRUE, fig.align='center'}
+threshold.high4 = BostonPMsim$pm - threshold.fHatlow4
+threshold.col.high = colors(100)[as.numeric(cut(threshold.high4,breaks = 100))]
+map("state","massachusetts", xlim=range(BostonPMsim$long), ylim=range(BostonPMsim$lat))
+points(BostonPMsim$long, BostonPMsim$lat, col=threshold.col.high, cex=.75)
+```
